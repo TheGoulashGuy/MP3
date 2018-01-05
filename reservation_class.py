@@ -10,9 +10,8 @@ class Reservation():
 
 	def display_info(self):
 		print("Name: " + self.surname)
-		print("Room Number: " + room.number)
-		print("Room Type: " + room.type)
-		print("Number of Occupants: " + occupants)
+		print("Room Number: " + str(self.room_number))
+		print("Room Type: " + self.room_type)
+		print("Number of Occupants: " + self.occupants)
 		print("Reservation Date: " + self.date)
-
 

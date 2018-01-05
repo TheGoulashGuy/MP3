@@ -50,4 +50,5 @@ def reserve_room():
 	current_reservations.append(reservation_surname)
 	reservation_surname = reservation.Reservation(reservation_surname, reservation_room_type, reservation_room_number, reservation_occupants, reservation_date)
 	print("Success! Your room number is " + str(reservation_room_number) + ".")
+
 reserve_room()
