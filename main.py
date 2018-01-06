@@ -47,8 +47,8 @@ def reserve_room():
 	reservation_occupants = input("How many occupants will be in the room?\n>>")
 	reservation_surname = input("What is your name?\n>>")
 	reservation_date = input("What is your reservation date? (MM/DD/YY-MM/DD/YY)\n>>")
-	current_reservations.append(reservation_surname)
 	reservation_surname = reservation.Reservation(reservation_surname, reservation_room_type, reservation_room_number, reservation_occupants, reservation_date)
+	current_reservations.append(reservation_surname)
 	print("Success! Your room number is " + str(reservation_room_number) + ".")
-
 reserve_room()
+current_reservations[0].display_info()
