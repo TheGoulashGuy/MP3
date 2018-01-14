@@ -7,6 +7,7 @@ import sqlite3
 
 database_connection = sqlite3.connect('reservations.db')
 cursor = database_connection.cursor()
+cursor.execute('CREATE TABLE IF NOT EXISTS reservations (surname, roomt_type, room_number, occupants, date)')
 
 budget = [11,22,33,44,55,66,77,88,99]
 single = [100,102,104,106,108,110,112,114,116,118,120,124,128,130,132]
@@ -32,14 +33,21 @@ def reserve_room():
 	occupants = input("How many occupants will be in the room?\n>>")
 	surname = input("What is your name?\n>>")
 	date = input("What is your reservation date? (MM/DD/YY-MM/DD/YY)\n>>")
+	cursor.execute("INSERT INTO reservations VALUES(?, ?, ?, ?, ?)", (surname, room_type, room_number, occupants, date))
+	database_connection.commit()
 	surname = reservation_class.Reservation(surname, room_type, room_number, occupants, date)
 	rs.current_reservations.append(surname)
 	print("Success! Your room number is " + str(room_number) + ".")
-	print(rs.current_reservations[0].surname)
-	cursor.execute("INSERT INTO reservations VALUES(?, ?, ?, ?, ?)", (surname, room_type, room_number, occupants, date))
-	cursor.commit()
-	cursor.close()
 reserve_room()
+
+def display_sql_res_info():
+	surname_to_search = input("Enter reservation name:\n>>")
+	cursor.execute("SELECT * FROM reservations WHERE surname=(?)", (surname_to_search,))
+	data = cursor.fetchall()
+	for row in data:
+		print(row)
+display_sql_res_info()
+
 
 def display_reservation_info():
 	surname_to_search = input("Enter reservation name:\n>>")
@@ -49,4 +57,3 @@ def display_reservation_info():
 		else:
 			pass
 	#rs.current_reservations[surname_index].display_info()
-display_reservation_info()
