@@ -1,7 +1,5 @@
 #!/usr/bin/python3
 
-import reservations as rs
-import reservation_class
 import random
 import sqlite3
 
@@ -35,8 +33,6 @@ def reserve_room():
 	date = input("What is your reservation date? (MM/DD/YY-MM/DD/YY)\n>>")
 	cursor.execute("INSERT INTO reservations VALUES(?, ?, ?, ?, ?)", (surname, room_type, room_number, occupants, date))
 	database_connection.commit()
-	surname = reservation_class.Reservation(surname, room_type, room_number, occupants, date)
-	rs.current_reservations.append(surname)
 	print("Success! Your room number is " + str(room_number) + ".")
 reserve_room()
 
@@ -47,13 +43,3 @@ def display_sql_res_info():
 	for row in data:
 		print(row)
 display_sql_res_info()
-
-
-def display_reservation_info():
-	surname_to_search = input("Enter reservation name:\n>>")
-	for x in rs.current_reservations:
-		if x.surname == surname_to_search:
-			x.display_info()
-		else:
-			pass
-	#rs.current_reservations[surname_index].display_info()
