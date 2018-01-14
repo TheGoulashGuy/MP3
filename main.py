@@ -1,54 +1,52 @@
 #!/usr/bin/python3
 
-import pdb
-#import room_classes as rc
-import reservation_class as reservation
-import pickle
+import reservations as rs
+import reservation_class
 import random
-#import available_rooms as ar
-#List of available rooms
+import sqlite3
+
+database_connection = sqlite3.connect('reservations.db')
+cursor = database_connection.cursor()
+
 budget = [11,22,33,44,55,66,77,88,99]
 single = [100,102,104,106,108,110,112,114,116,118,120,124,128,130,132]
 family = [200,202,204,206,208,210,212,214,216]
 penthouse = [900,902,904,906,908,910]
 
-#These are the current reservations, sorted by surname (Reservation class instance names)
-current_reservations = []
+print("Welcome!\n\n")
 
-#This is the list of current unavailable rooms
 occupied_rooms = []
 
-'''
-def recommendRoom(x):
-	if x <= 2:
-		print("We recommend the Single Bed Suite.")
-		rc.Room.Single.display_info()
-		print("We also have Budget Rooms available.")
-	elif x > 2 and x < 8:
-		print("We recommend the Family Suite.")
-		rc.Room.Family.display_info()
-	elif x >= 8:
-		print("We recommend the Penthouse Suite.")
-		rc.Room.Penthouse.display_info()last
-'''
-print("Welcome!")
-
+#This function determiens room number
 def determine_room_number(x):
-	reservation_room_number = random.choice(eval(x))
-	occupied_rooms.append(reservation_room_number)
-	eval(x).remove(reservation_room_number)
+	room_number = random.choice(eval(x))
+	occupied_rooms.append(room_number)
+	eval(x).remove(room_number)
 
 #This function performs room reservation
 def reserve_room():
-	reservation_room_type = input("What is your preferred room type? (Budget, Single, Family, Penthouse)\n>>")
-	reservation_room_type = reservation_room_type.lower()
-	determine_room_number(reservation_room_type)
-	reservation_room_number = occupied_rooms[-1]
-	reservation_occupants = input("How many occupants will be in the room?\n>>")
-	reservation_surname = input("What is your name?\n>>")
-	reservation_date = input("What is your reservation date? (MM/DD/YY-MM/DD/YY)\n>>")
-	reservation_surname = reservation.Reservation(reservation_surname, reservation_room_type, reservation_room_number, reservation_occupants, reservation_date)
-	current_reservations.append(reservation_surname)
-	print("Success! Your room number is " + str(reservation_room_number) + ".")
+	room_type = input("What is your preferred room type? (Budget, Single, Family, Penthouse)\n>>")
+	room_type = room_type.lower()
+	determine_room_number(room_type)
+	room_number = occupied_rooms[-1]
+	occupants = input("How many occupants will be in the room?\n>>")
+	surname = input("What is your name?\n>>")
+	date = input("What is your reservation date? (MM/DD/YY-MM/DD/YY)\n>>")
+	surname = reservation_class.Reservation(surname, room_type, room_number, occupants, date)
+	rs.current_reservations.append(surname)
+	print("Success! Your room number is " + str(room_number) + ".")
+	print(rs.current_reservations[0].surname)
+	cursor.execute("INSERT INTO reservations VALUES(?, ?, ?, ?, ?)", (surname, room_type, room_number, occupants, date))
+	cursor.commit()
+	cursor.close()
 reserve_room()
-current_reservations[0].display_info()
+
+def display_reservation_info():
+	surname_to_search = input("Enter reservation name:\n>>")
+	for x in rs.current_reservations:
+		if x.surname == surname_to_search:
+			x.display_info()
+		else:
+			pass
+	#rs.current_reservations[surname_index].display_info()
+display_reservation_info()
