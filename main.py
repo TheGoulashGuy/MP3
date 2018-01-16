@@ -16,7 +16,7 @@ print("Welcome!\n\n")
 
 occupied_rooms = []
 
-#This function determiens room number
+#This function determines room number
 def determine_room_number(x):
 	room_number = random.choice(eval(x))
 	occupied_rooms.append(room_number)
@@ -51,7 +51,7 @@ def delete_reservation(x):
 
 def fetch_reservation_to_cancel():
 	surname_to_search = input("Enter reservation name:\n>>")
-	cursor.execute("SELECT FROM reservations WHERE surname=?", (surname_to_search,))
+	cursor.execute("SELECT * FROM reservations WHERE surname=?", (surname_to_search,))
 	data = cursor.fetchone()
 	if data:
 		delete_reservation(surname_to_search)
