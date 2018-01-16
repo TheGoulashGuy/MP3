@@ -11,7 +11,7 @@ Create a sqlite3 file called reservations.db in the MP3 directory.
 <br>
 I may add more complex functionality later. I don't know.
 <br>
-It's for a school project. That's due tomorrow.
+It's for a school project.
 <br>
 <br>
 That's due tomorrow.
