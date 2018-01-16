@@ -5,7 +5,7 @@ import sqlite3
 
 database_connection = sqlite3.connect('reservations.db')
 cursor = database_connection.cursor()
-cursor.execute('CREATE TABLE IF NOT EXISTS reservations (surname, roomt_type, room_number, occupants, date)')
+cursor.execute('CREATE TABLE IF NOT EXISTS reservations (surname, room_type, room_number, occupants, date)')
 
 budget = [11,22,33,44,55,66,77,88,99]
 single = [100,102,104,106,108,110,112,114,116,118,120,124,128,130,132]
@@ -51,7 +51,12 @@ def delete_reservation(x):
 
 def fetch_reservation_to_cancel():
 	surname_to_search = input("Enter reservation name:\n>>")
-	delete_reservation(surname_to_search)
+	cursor.execute("SELECT FROM reservations WHERE surname=?", (surname_to_search,))
+	data = cursor.fetchone()
+	if data:
+		delete_reservation(surname_to_search)
+	else:
+		print("No such record found.")
 
 def customer_check_out():
 	name_to_check_out = input("Enter reservation name:\n>>")
