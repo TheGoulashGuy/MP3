@@ -34,12 +34,62 @@ def reserve_room():
 	cursor.execute("INSERT INTO reservations VALUES(?, ?, ?, ?, ?)", (surname, room_type, room_number, occupants, date))
 	database_connection.commit()
 	print("Success! Your room number is " + str(room_number) + ".")
-reserve_room()
 
 def display_sql_res_info():
 	surname_to_search = input("Enter reservation name:\n>>")
 	cursor.execute("SELECT * FROM reservations WHERE surname=(?)", (surname_to_search,))
+	data = cursor.fetchone()
+	if data:
+		for row in data:
+			print(row)
+	else:
+		print("No such record found.")
+def delete_reservation(x):
+	cursor.execute("DELETE FROM reservations WHERE surname=?", (x,))
+	database_connection.commit()
+	print("Successful deletion.")
+
+def fetch_reservation_to_cancel():
+	surname_to_search = input("Enter reservation name:\n>>")
+	delete_reservation(surname_to_search)
+
+def customer_check_out():
+	name_to_check_out = input("Enter reservation name:\n>>")
+	cursor.execute("SELECT room_number, room_type FROM reservations WHERE surname=(?)", (name_to_check_out,))
 	data = cursor.fetchall()
-	for row in data:
-		print(row)
-display_sql_res_info()
+	data = data[0]
+	data = list(data)
+	room_to_reopen = (data[0])
+	room_type_to_reopen = (data[1])
+
+	if room_type_to_reopen == 'budget':
+		budget.append(room_to_reopen)
+
+	elif room_type_to_reopen == 'single':
+		single.append(room_to_reopen)
+
+	elif room_type_to_reopen == 'family':
+		family.append(room_to_reopen)
+
+	elif room_type_to_reopen == 'penthouse':
+		family.append(room_to_reopen)
+
+	else:
+		print("Error: Specified room type does not exist")
+
+	delete_reservation(name_to_check_out)
+
+def decide_action():
+	potential_action = input("Which action would you like to perform?\n1 - Reserve a room\n2 - Display reservation information\n3 - Check out a customer\n4 - Cancel reservation\n>>")
+	if int(potential_action) == 1:
+		reserve_room()
+	elif int(potential_action) == 2:
+		display_sql_res_info()
+	elif int(potential_action) == 3:
+		customer_check_out()
+	elif int(potential_action) == 4:
+		fetch_reservation_to_cancel()
+	else:
+		print("Error: Unrecognized option.")
+		decide_action()
+decide_action()
