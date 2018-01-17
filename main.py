@@ -33,36 +33,26 @@ def initial_pickling():
 	print("Done pickling!")
 #initial_pickling()
 
-#This function determines room number
-def determine_room_number(x):
-	with open(x+'.pickle','rb') as available_rooms_in:
-		available_rooms = pickle.load(available_rooms_in)
-
-	room_number = random.choice(available_rooms)
-	available_rooms.remove(room_number)
-
-	with open('occupied_rooms.pickle','wb') as occupied_rooms:
-		pickle.dump(room_number,occupied_rooms)
-
-	print(available_rooms)
-	print(room_number)
-
 #This function performs room reservation
 def reserve_room():
 	room_type = input("What is your preferred room type? (Budget, Single, Family, Penthouse)\n>>")
 	room_type = room_type.lower()
 
-	with open(room_type+'.pickle','rb') as available_rooms_in:
-		available_rooms = pickle.load(available_rooms_in)
+	with open(room_type+'.pickle','rb') as input_file:
+		available_rooms = pickle.load(input_file)
+		room_number = random.choice(available_rooms)
 
-	room_number = random.choice(available_rooms)
-	available_rooms.remove(room_number)
+	with open(room_type+'.pickle','wb') as input_file:
+		available_rooms.remove(room_number)
+		updated_list = available_rooms
+		pickle.dump(updated_list, input_file)
+		print(room_number)
+		print(updated_list)
+	input_file.close()
 
 	with open('occupied_rooms.pickle','wb') as occupied_rooms:
 		pickle.dump(room_number,occupied_rooms)
 
-	print(available_rooms)
-	print(room_number)
 	occupants = input("How many occupants will be in the room?\n>>")
 	surname = input("What is your name?\n>>")
 	date = input("What is your reservation date? (MM/DD/YY-MM/DD/YY)\n>>")
@@ -103,32 +93,6 @@ def fetch_reservation_to_cancel():
 	else:
 		print("No such record found.")
 
-def customer_check_out():
-	name_to_check_out = input("Enter reservation name:\n>>")
-	cursor.execute("SELECT room_number, room_type FROM reservations WHERE surname=(?)", (name_to_check_out,))
-	data = cursor.fetchall()
-	data = data[0]
-	data = list(data)
-	room_to_reopen = (data[0])
-	room_type_to_reopen = (data[1])
-
-	if room_type_to_reopen == 'budget':
-		budget.append(room_to_reopen)
-
-	elif room_type_to_reopen == 'single':
-		single.append(room_to_reopen)
-
-	elif room_type_to_reopen == 'family':
-		family.append(room_to_reopen)
-
-	elif room_type_to_reopen == 'penthouse':
-		family.append(room_to_reopen)
-
-	else:
-		print("Error: Specified room type does not exist")
-
-	delete_reservation(name_to_check_out)
-
 def decide_action():
 	potential_action = input("Which action would you like to perform?\n1 - Reserve a room\n2 - Display reservation information\n3 - Check out a customer\n4 - Cancel reservation\n>>")
 	if int(potential_action) == 1:
@@ -143,3 +107,4 @@ def decide_action():
 		print("Error: Unrecognized option.")
 		decide_action()
 decide_action()
+
