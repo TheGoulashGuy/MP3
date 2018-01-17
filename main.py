@@ -46,8 +46,7 @@ def reserve_room():
 		available_rooms.remove(room_number)
 		updated_list = available_rooms
 		pickle.dump(updated_list, input_file)
-		print(room_number)
-		print(updated_list)
+
 	input_file.close()
 
 	with open('occupied_rooms.pickle','wb') as occupied_rooms:
